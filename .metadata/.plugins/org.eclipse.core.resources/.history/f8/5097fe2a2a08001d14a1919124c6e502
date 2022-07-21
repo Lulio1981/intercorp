@@ -1,0 +1,10 @@
+package com.intercorp.demo.repository;
+
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ClientRepository implements Reac{
+
+
+	
+}

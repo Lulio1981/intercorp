@@ -1,0 +1,24 @@
+package com.intercorp.demo.entity;
+
+import java.util.Date;
+
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import lombok.Data;
+
+@Document
+@Data
+public class Client {
+	
+	private String id;
+	
+	private String dni;
+	
+	private String nombre;
+	
+	private String apellido;
+	
+	private Integer edad;
+	
+	private Date fechaNacimiento;
+}

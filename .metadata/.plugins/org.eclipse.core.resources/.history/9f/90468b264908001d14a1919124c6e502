@@ -1,0 +1,100 @@
+package com.intercorp.demo.utils;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+import com.intercorp.demo.constants.Constants;
+
+public class UtilsDate {
+	
+	public double monthsCompleteQuanty () {
+		double partYearsDecimal = Constants.LIFE_EXPECTANCY%1;
+		double months  = partYearsDecimal*12;
+		return months;
+	}
+	
+	public double daysQuanty (Date dateOfBirth) {
+		int monthEvalutate = actuallyMonth(dateOfBirth);
+		int numberDays= numberDaysForMonth(monthEvalutate);
+		double monthPartDecimal = monthsCompleteQuanty()%1;
+		double days = monthPartDecimal*30;
+		return days;
+	}
+	
+	public double yearsIntegerPart () {
+		int years = (int) (Constants.LIFE_EXPECTANCY - Constants.LIFE_EXPECTANCY%1);
+		return years;
+	}
+	
+	public double monthsIntegerPart () {
+		int months = (int) (monthsCompleteQuanty()- monthsCompleteQuanty()%1);
+		return months;
+	}
+	
+	public double daysIntegerPart (Date dateOfBirth) {
+		int days = (int) (monthsCompleteQuanty()- monthsCompleteQuanty()%1);
+		return days;
+	}
+	
+	public LocalDate actuallyDate (Date dateOfBirth) {
+		LocalDate date = dateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate dateProccess = date.plusYears((long) yearsIntegerPart()).plusMonths((long)monthsIntegerPart());
+		return dateProccess;
+	}
+	
+	public int actuallyMonth (Date dateOfBirth) {
+		return actuallyDate(dateOfBirth).getMonthValue();
+	}
+	
+	public int actuallyYear (Date dateOfBirth) {
+		return actuallyDate(dateOfBirth).getYear();
+	}
+	
+	
+	public int numberDaysForMonth(int mes, int year){
+		 
+	    int numeroDias=-1;
+	 
+	        switch(mes){
+	            case 1:
+	            case 3:
+	            case 5:
+	            case 7:
+	            case 8:
+	            case 10:
+	            case 12:
+	                numeroDias=31;
+	                break;
+	            case 4:
+	            case 6:
+	            case 9:
+	            case 11:
+	                numeroDias=30;
+	                break;
+	            case 2:
+	                if(esBisiesto(1900 + year)){
+	                    numeroDias=29;
+	                }else{
+	                    numeroDias=28;
+	                }
+	                break;
+	 
+	        }
+	 
+	    return numeroDias;
+	}
+	
+	public static boolean esBisiesto(int anio) {
+		 
+	    GregorianCalendar calendar = new GregorianCalendar();
+	    boolean esBisiesto = false;
+	    if (calendar.isLeapYear(anio)) {
+	        esBisiesto = true;
+	    }
+	    return esBisiesto;
+	}
+
+}

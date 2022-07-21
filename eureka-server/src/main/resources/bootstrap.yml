@@ -1,0 +1,17 @@
+server:
+  port: 8089
+
+spring:
+  application:
+    name: eureka-server
+eureka:
+  instance:
+    hostname: localhost
+  server:
+    enableSelfPreservation: ${EK_ENABLE_SELF_PRESERVATION:true}  # default value: true
+    renewalPercentThreshold: ${EK_RENEWAL_PERCENT_THRESHOLD:0.85} # default value: 0.85
+  client:
+    registerWithEureka: false
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/

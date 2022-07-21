@@ -1,0 +1,127 @@
+package com.intercorp.demo.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.intercorp.demo.services.ClientService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+import reactor.core.publisher.Mono;
+
+@RestController
+@RequestMapping("client")
+@Tag(name = "Clients information", description = "Manage clients opertions")
+@CrossOrigin( value = { "*" })
+public class ClientController {
+
+	@Autowired
+    private  ClientService service;
+
+    @GetMapping("/{documentNumber}")
+    public Mono<ResponseEntity<Mono<Client>>> getByDocumentNumber(@PathVariable String documentNumber) {
+        return Mono.just(
+                ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(service.getByDocumentNumber(documentNumber))
+        );
+    }
+
+    @GetMapping("/find/{id}")
+    public Mono<ResponseEntity<Mono<PersonalClient>>> getById(@PathVariable String id) {
+        return Mono.just(
+                ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(service.getById(id))
+        );
+    }
+
+    @GetMapping
+    public Mono<ResponseEntity<Flux<PersonalClient>>> getAll() {
+        return Mono.just(
+                ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(service.getAll())
+        );
+    }
+
+    @GetMapping("/profiles")
+    public Mono<ResponseEntity<Mono<String>>> getProfiles() {
+        return Mono.just(
+                ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(Mono.just(new Gson().toJson(ClientProfiles.getPersonalProfiles())))
+        );
+    }
+
+    @PostMapping
+    public Mono<ResponseEntity<PersonalClient>> create(@RequestBody CreatePersonalClientDto o) {
+
+        return service.save(o).map( p -> ResponseEntity
+                .created(URI.create("/client/personal/".concat(p.getId())))
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(p)
+        );
+    }
+
+    @PostMapping(value = "/{documentNumber}/accounts")
+    public Mono<ResponseEntity<PersonalClient>> addAccounts(@PathVariable String documentNumber, @RequestBody CreatePersonalClientAccountDto o) {
+
+        return service.addAccount(documentNumber, o)
+                .map(p -> ResponseEntity.created(URI.create("/client/personal/"
+                                .concat(documentNumber)
+                        ))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(p))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping(value = "/{documentNumber}/accounts")
+    public Mono<ResponseEntity<PersonalClient>> updateAccounts(@PathVariable String documentNumber, @RequestBody UpdatePersonalClientAccountDto o) {
+
+        return service.updateAccount(documentNumber, o)
+                .map(p -> ResponseEntity.created(URI.create("/client/personal/"
+                                .concat(documentNumber)
+                        ))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(p))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping(value = "/{documentNumber}/accounts/{accountId}")
+    public Mono<ResponseEntity<PersonalClient>> deleteAccounts(@PathVariable String documentNumber, @PathVariable String accountId) {
+
+        return service.deleteAccount(documentNumber, accountId)
+                .map(p -> ResponseEntity.created(URI.create("/client/personal/"
+                                .concat(documentNumber)
+                        ))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(p))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping
+    public Mono<ResponseEntity<PersonalClient>> update(@RequestBody UpdatePersonalClientDto o) {
+        return service.update(o)
+                .map(p -> ResponseEntity.created(URI.create("/client/personal/"
+                                .concat(p.getId())
+                        ))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(p))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping
+    public Mono<ResponseEntity<PersonalClient>> delete(@RequestBody DeletePersonalClientDto o) {
+        return service.delete(o)
+                .map(p -> ResponseEntity.created(URI.create("/client/personal/"
+                                .concat(p.getId())
+                        ))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(p))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+}

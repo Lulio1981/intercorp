@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: testintercorp
+
+# Swagger openapi.docs custom path
+springdoc:
+  api-docs:
+    path: client/docs
+    enabled: true
+  swagger-ui:
+    path: client/docs/ui
+    enabled: true
+  show-actuator: true
+
+# Tomcat Server Port
+server:
+  port: 3000

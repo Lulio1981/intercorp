@@ -1,0 +1,8 @@
+package com.intercorp.demo.repository;
+
+import lombok.Data;
+
+@Data
+public class ClientRepository {
+
+}

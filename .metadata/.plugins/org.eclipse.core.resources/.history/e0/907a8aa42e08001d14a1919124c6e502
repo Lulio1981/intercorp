@@ -1,0 +1,5 @@
+package com.intercorp.demo.dto;
+
+public class ReportClientWithDead {
+
+}

@@ -1,0 +1,27 @@
+# Check if the properties file is loading
+my-own-app:
+  properties:
+    status: loaded
+
+# Eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://192.168.100.198:8089/eureka
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: ms-personal-passive-saving-account
+          uri: lb://ms-personal-passive-saving-account # http://localhost:3000/
+          predicates:
+            - Path=/personal/passive/saving_account/**
+
+        - id: ms-enterprise-passive-pyme-current-account
+          uri: lb://ms-enterprise-passive-pyme-current-account
+          predicates:
+            - Path=/enterprise/passive/pyme_current_account/**

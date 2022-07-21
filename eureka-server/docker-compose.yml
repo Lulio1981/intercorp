@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  app:
+    image: lulio1981/spring-eureka-server:1.0.1
+    ports:
+      - "8089:8089"
+    restart: always

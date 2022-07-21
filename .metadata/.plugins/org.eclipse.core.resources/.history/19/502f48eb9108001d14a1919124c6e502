@@ -1,0 +1,98 @@
+package com.intercorp.demo.services.impl;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.intercorp.demo.dto.ReportClientWithDead;
+import com.intercorp.demo.entity.Client;
+import com.intercorp.demo.repository.ClientRepository;
+import com.intercorp.demo.services.ClientService;
+import com.intercorp.demo.utils.UtilsDate;
+import com.intercorp.demo.utils.handler.exceptions.BadRequestException;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+@Service
+public class ClientServiceImpl implements ClientService {
+
+	@Autowired
+	private ClientRepository repository;
+
+	@Autowired
+	private UtilsDate utilsDate;
+
+	@Override
+	public Flux<ReportClientWithDead> getAllWithProbablyDeadDate() {
+
+		return repository.findAll().map(c -> {
+			ReportClientWithDead reportClientWithDead = new ReportClientWithDead();
+			reportClientWithDead.setId(c.getId());
+			reportClientWithDead.setApellido(c.getApellido());
+			reportClientWithDead.setNombre(c.getNombre());
+			reportClientWithDead.setEdad(c.getEdad());
+			reportClientWithDead.setFechaNacimiento(c.getFechaNacimiento());
+			reportClientWithDead.setFechaProbableMuerte(utilsDate.actuallyDate(c.getFechaNacimiento()));
+			return reportClientWithDead;
+		});
+	}
+
+	@Override
+	public Mono<Client> getById(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Mono<Client> save(Client client) {
+		return repository.findByDni(client.getDni()).map(p -> {
+			throw new BadRequestException("DNI", "[save] The DNI number " + client.getDni() + " is already in use.",
+					"An error occurred while trying to create an item.", getClass(), "save");
+		}).switchIfEmpty(Mono.defer(() -> {
+			return repository.save(client);
+
+		})).onErrorResume(e -> Mono.error(new BadRequestException("ID",
+				"An error occurred while trying to create an user.", e.getMessage(), getClass(), "save.onErrorResume")))
+				.cast(Client.class);
+	}
+
+	@Override
+	public Mono<Double> averageAge() {
+		return repository.findAll().collect(Collectors.averagingDouble(Client::getEdad));
+	}
+
+	@Override
+	public Mono<Double> standardDeviation() {
+		
+		Flux<Client> listClients =repository.findAll();
+		Mono<Double> quanty =  listClients.count().map(q->q.doubleValue());
+		return listClients.flatMap(c-> {
+			return averageAge().map(av->{
+				double edad = (double) c.getEdad();
+				double totally = Math.pow(edad-av.doubleValue(),2);
+				return totally;
+			});
+		}).collect(Collectors.averagingDouble(Double::doubleValue))
+				.flatMap(pa-> quanty.flatMap(qa ->{
+					return Mono.just(Math.pow(pa.doubleValue()/qa.doubleValue(),1/2));
+				}));
+		
+		
+		
+	}
+	
+	@Override
+	public Mono<Client> findByDni(String dni) {
+		return repository.findByDni(dni);
+	}
+
+}

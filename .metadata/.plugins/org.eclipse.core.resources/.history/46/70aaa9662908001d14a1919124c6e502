@@ -1,0 +1,5 @@
+package com.intercorp.demo.repository;
+abstract
+public class ClientRepository {
+
+}

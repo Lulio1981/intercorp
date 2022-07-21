@@ -1,0 +1,68 @@
+package com.intercorp.demo.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.intercorp.demo.dto.ReportClientWithDead;
+import com.intercorp.demo.entity.Client;
+import com.intercorp.demo.services.ClientService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+@RestController
+@RequestMapping("client")
+@Tag(name = "Clients information", description = "Manage clients opertions")
+@CrossOrigin( value = { "*" })
+public class ClientController {
+
+	@Autowired
+    private  ClientService service;
+	
+    @PostMapping
+    public Mono<ResponseEntity<Client>> create(@RequestBody Client client) {
+
+        return service.save(o).map( p -> ResponseEntity
+                .created(URI.create("/client/personal/".concat(p.getId())))
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(p)
+        );
+    }
+
+    @GetMapping("/{documentNumber}")
+    public Mono<ResponseEntity<Mono<Client>>> getByDocumentNumber(@PathVariable String documentNumber) {
+        return Mono.just(
+                ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(service.findByDni(documentNumber))
+        );
+    }
+
+    @GetMapping("/deathDate")
+    public Mono<ResponseEntity<Flux<ReportClientWithDead>>> getAllWithProbablyDeadDate() {
+        return Mono.just(
+                ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(service.getAllWithProbablyDeadDate())
+        );
+    }
+
+    @GetMapping("/averageAge")
+    public Mono<ResponseEntity<Mono<Double>>> averageAge() {
+        return Mono.just(
+                ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(service.averageAge())
+        );
+    }
+
+}

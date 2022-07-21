@@ -1,0 +1,23 @@
+package com.intercorp.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+
+@OpenAPIDefinition(info = @Info(
+		title = "OpenAPI Documentation",
+		version = "1.0.0",
+		description = "OpenAPI Saving Account Application Documentation v1.0.0",
+		contact = @Contact(name = "Samuel Luis", email = "samuel@company.com", url = "https://www.linkedin.com/in/samuel14luis/"),
+		license = @License(name = "MIT License", url = "https://choosealicense.com/licenses/mit/")
+))
+
+@SpringBootApplication
+public class DemoApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(DemoApplication.class, args);
+	}
+
+}

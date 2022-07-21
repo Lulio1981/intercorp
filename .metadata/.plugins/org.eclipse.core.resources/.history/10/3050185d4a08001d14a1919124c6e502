@@ -1,0 +1,103 @@
+package com.intercorp.demo.utils;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+import com.intercorp.demo.constants.Constants;
+
+public class UtilsDate {
+	
+	public double monthsCompleteQuanty () {
+		double partYearsDecimal = Constants.LIFE_EXPECTANCY%1;
+		double months  = partYearsDecimal*12;
+		return months;
+	}
+	
+	public double daysQuanty (Date dateOfBirth) {
+		int monthEvalutate = actuallyMonth(dateOfBirth);
+		int yearEvaluate = actuallyYear(dateOfBirth);
+		int numberDays= numberDaysForMonth(monthEvalutate,yearEvaluate);
+		double monthPartDecimal = monthsCompleteQuanty()%1;
+		double days = monthPartDecimal*numberDays;
+		return days;
+	}
+	
+	public double yearsIntegerPart () {
+		int years = (int) (Constants.LIFE_EXPECTANCY - Constants.LIFE_EXPECTANCY%1);
+		return years;
+	}
+	
+	public double monthsIntegerPart () {
+		int months = (int) (monthsCompleteQuanty()- monthsCompleteQuanty()%1);
+		return months;
+	}
+	
+	public double daysIntegerPart (Date dateOfBirth) {
+		int days = (int) (monthsCompleteQuanty()- monthsCompleteQuanty()%1);
+		return days;
+	}
+	
+	public LocalDate actuallyDate (Date dateOfBirth) {
+		LocalDate date = dateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate dateProccess = date.plusYears((long) yearsIntegerPart()).plusMonths((long)monthsIntegerPart());
+		return dateProccess;
+	}
+	
+	public int actuallyMonth (Date dateOfBirth) {
+		return actuallyDate(dateOfBirth).getMonthValue();
+	}
+	
+	public int actuallyYear (Date dateOfBirth) {
+		return actuallyDate(dateOfBirth).getYear();
+	}
+	
+	
+	public int numberDaysForMonth(int month, int year){
+		 
+	    int numberDays=-1;
+	 
+	        switch(month){
+	            case 1:
+	            case 3:
+	            case 5:
+	            case 7:
+	            case 8:
+	            case 10:
+	            case 12:
+	            	numberDays=31;
+	                break;
+	            case 4:
+	            case 6:
+	            case 9:
+	            case 11:
+	            	numberDays=30;
+	                break;
+	            case 2:
+	                if(leapYear(1900 + year)){
+	                    numberDays=29;
+	                }else{
+	                	numberDays=28;
+	                }
+	                break;
+	            default:
+	            	System.out.print("Month dont exist");
+	 
+	        }
+	 
+	    return numberDays;
+	}
+	
+	public static boolean leapYear(int year) {
+		 
+	    GregorianCalendar gregorianCalendar = new GregorianCalendar();
+	    boolean leapYear = false;
+	    if (gregorianCalendar.isLeapYear(year)) {
+	    	leapYear = true;
+	    }
+	    return leapYear;
+	}
+
+}

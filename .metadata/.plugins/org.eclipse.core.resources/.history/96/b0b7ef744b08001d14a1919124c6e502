@@ -1,0 +1,22 @@
+package com.intercorp.demo.dto;
+
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class ReportClientWithDead {
+	
+	private String id;
+	
+	private String nombre;
+	
+	private String apellido;
+	
+	private Integer edad;
+	
+	private Date fechaNacimiento;
+	
+	private Date fechaProbableMuerte;
+
+}

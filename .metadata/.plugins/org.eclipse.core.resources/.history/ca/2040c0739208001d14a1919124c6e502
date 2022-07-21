@@ -1,0 +1,23 @@
+package com.intercorp.demo.services;
+
+import java.util.List;
+
+import com.intercorp.demo.dto.ReportClientWithDead;
+import com.intercorp.demo.entity.Client;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+public interface ClientService {
+	
+    public Flux<ReportClientWithDead> getAllWithProbablyDeadDate();
+    
+	Mono<Client> findByDni(String dni);
+
+    public Mono<Client> save(Client client);
+    
+    public Mono<Double> averageAge();
+    
+    public Mono<Double> standardDeviation();
+
+}
