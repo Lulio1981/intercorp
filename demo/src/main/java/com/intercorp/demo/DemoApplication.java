@@ -2,6 +2,9 @@ package com.intercorp.demo;
 
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -25,14 +28,14 @@ import io.swagger.v3.oas.annotations.info.License;
 @EnableEurekaClient
 @SpringBootApplication
 public class DemoApplication implements CommandLineRunner{
+	
 	private static final Logger logger = Logger.getLogger(DemoApplication.class.toString());
-
+	
 	@Autowired
-	private static Environment env;
+	Environment env;
 	
 	@Override
 	public void run(String... args) throws Exception {
-
 		logger.info("Java version: " + env.getProperty("java.version"));
 		logger.info("Application name: " + env.getProperty("spring.application.name"));
 		logger.info("Properties file upload status: " + env.getProperty("my-own-app.properties.status"));
@@ -41,7 +44,6 @@ public class DemoApplication implements CommandLineRunner{
 	}
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(DemoApplication.class, args);
 	}
 

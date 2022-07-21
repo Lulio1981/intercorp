@@ -1,0 +1,5 @@
+package com.intercorp.demo.configuration;
+
+public class Enviroments {
+
+}

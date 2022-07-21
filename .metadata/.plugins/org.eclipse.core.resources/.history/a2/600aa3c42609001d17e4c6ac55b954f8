@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: testintercorp
+  data:
+    mongodb:
+      uri: mongodb+srv://root:example@localhost:27017
+      database: msClient
+
+      
+# Swagger openapi.docs custom path
+springdoc:
+  api-docs:
+    path: client/docs
+    enabled: true
+  swagger-ui:
+    path: client/docs/ui
+    enabled: true
+  show-actuator: true
+
+# Tomcat Server Port
+server:
+  port: 3000
+
+# Actuator Service
+# management.endpoints.web.exposure.include=*
+management:
+  endpoint:
+    health:
+      show-details: always
+
+# Eureka
+eureka:
+  instance:
+    preferIpAddress: false
+    hostname: ${MICROSERVICE_HOSTNAME:localhost}
+  client:
+    service-url:
+      defaultZone: http://localhost:8089/eureka
